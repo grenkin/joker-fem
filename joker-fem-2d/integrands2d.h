@@ -81,4 +81,58 @@ public:
 
 };
 
+struct Mult_P1_Basis : public Integrand {
+    FunctionP1& p1;
+    BasisFunction& basis;
+
+    Mult_P1_Basis (Mesh& _mesh, FunctionP1& _p1, BasisFunction& _basis)
+        : Integrand(_mesh), p1(_p1), basis(_basis)
+    {}
+
+    double Value (int triangle_index, double L0, double L1)
+    {
+        return p1.Value(triangle_index, L0, L1)
+            * basis.Value(triangle_index, L0, L1);
+    }
+};
+
+Mult_P1_Basis operator* (FunctionP1& p1, BasisFunction& basis)
+{
+    return Mult_P1_Basis(p1.mesh, p1, basis);
+}
+
+struct AuxBoundaryMult_P0_Basis {
+    Mesh& mesh;
+    BoundaryFunctionP0& p0;
+    BasisFunction& basis;
+
+    AuxBoundaryMult_P0_Basis (Mesh& _mesh, BoundaryFunctionP0& _p0,
+        BasisFunction& _basis)
+        : mesh(_mesh), p0(_p0), basis(_basis)
+    {}
+};
+
+struct BoundaryMult_P0_Basis_Basis : public BoundaryIntegrand {
+    BoundaryFunctionP0& p0;
+    BasisFunction& basis1, basis2;
+
+    BoundaryMult_P0_Basis_Basis (Mesh& _mesh, BoundaryFunctionP0& _p0,
+        BasisFunction& _basis1, BasisFunction& _basis2)
+        : BoundaryIntegrand(_mesh), p0(_p0), basis1(_basis1), basis2(_basis2)
+    {}
+
+    double Value (int boundary_edge_index, double t)
+    {
+        return p0.Value(boundary_edge_index)
+            * basis1.BoundaryValue(boundary_edge_index, t)
+            * basis2.BoundaryValue(boundary_edge_index, t);
+    }
+};
+
+BoundaryMult_P0_Basis_Basis operator* (AuxBoundaryMult_P0_Basis& aux,
+    BasisFunction& basis)
+{
+    return BoundaryMult_P0_Basis_Basis(aux.mesh, aux.p0, aux.basis, basis);
+}
+
 #endif // INTEGRANDS2D_H_INCLUDED

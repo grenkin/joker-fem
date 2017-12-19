@@ -4,9 +4,8 @@
 #include "mesh2d.h"
 
 // piecewise linear function in the domain
-class FunctionP1 {
+struct FunctionP1 {
     Mesh& mesh;
-public:
     std::vector<double> values;  // values of the function at mesh nodes
 
     FunctionP1 (Mesh& _mesh)
@@ -25,9 +24,8 @@ public:
 };
 
 // piecewise linear function on the boundary
-class BoundaryFunctionP1 {
+struct BoundaryFunctionP1 {
     Mesh& mesh;
-public:
     // values of the function at boundary nodes of the mesh
     std::vector<double> values;
 
@@ -47,9 +45,8 @@ public:
 };
 
 // piecewise constant function on the boundary
-class BoundaryFunctionP0 {
+struct BoundaryFunctionP0 {
     Mesh& mesh;
-public:
     // values of the function at boundary edges of the mesh
     std::vector<double> values;
 
