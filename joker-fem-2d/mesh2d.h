@@ -28,8 +28,12 @@ struct Mesh {
     int boundary_nodes_num;
     // indices of boundary nodes in the vector of nodes
     std::vector<int> boundary_nodes;
+    // indices of nodes in the vector boundary_nodes (-1 for non-boundary nodes)
+    std::vector<int> boundary_indices;
     // for each node - a list of indices of triangles containing this node
     std::vector<std::list<int> > triangles_for_nodes;
+    // for each boundary node - a list of boundary edges containing this node
+    std::vector<std::list<int> > edges_for_boundary_nodes;
 
     Mesh (std::string file_name);
 };
