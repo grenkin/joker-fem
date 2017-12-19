@@ -1,0 +1,6 @@
+#ifndef INTEGRANDS2D_H_INCLUDED
+#define INTEGRANDS2D_H_INCLUDED
+
+#include "splines2d.h"
+
+#endif // INTEGRANDS2D_H_INCLUDED

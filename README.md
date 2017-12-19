@@ -1,2 +1,4 @@
-# joker-fem
-Finite element solver of diffusion-reaction systems
+# Joker FEM
+### Решатель систем диффузии-реакции методом конечных элементов
+
+[Здесь](https://groups.google.com/d/forum/joker-fdm) вы можете задать вопросы по программе.
