@@ -3,26 +3,6 @@
 
 #include "mesh2d.h"
 
-// function value at the point with local coordinates L0, L1
-// vector values contains values of the function at mesh nodes
-double get_value (Mesh& mesh, std::vector<double>& values, int triangle_index,
-    double L0, double L1)
-{
-    int* nodes = mesh.triangles[triangle_index].nodes;
-    return L0 * values[nodes[0]] + L1 * values[nodes[1]]
-        + (1 - L0 - L1) * values[nodes[2]];
-}
-
-// function value at the point with parameter t (from -1 to 1)
-// vector values contains values of the function at boundary nodes of the mesh
-double get_boundary_value (Mesh& mesh, std::vector<double>& values,
-    int boundary_edge_index, double t)
-{
-    int* nodes = mesh.boundary_edges[boundary_edge_index].boundary_nodes;
-    return 0.5 * (1 - t) * values[nodes[0]]
-        + 0.5 * (1 + t) * values[nodes[1]];
-}
-
 // piecewise linear function in the domain
 struct FunctionP1 {
     Mesh& mesh;
@@ -37,7 +17,9 @@ struct FunctionP1 {
     // function value at the point with local coordinates L0, L1
     double Value (int triangle_index, double L0, double L1)
     {
-        return get_value(mesh, values, triangle_index, L0, L1);
+        int* nodes = mesh.triangles[triangle_index].nodes;
+        return L0 * values[nodes[0]] + L1 * values[nodes[1]]
+            + (1 - L0 - L1) * values[nodes[2]];
     }
 };
 
@@ -56,7 +38,9 @@ struct BoundaryFunctionP1 {
     // function value at the point with parameter t (from -1 to 1)
     double Value (int boundary_edge_index, double t)
     {
-        return get_boundary_value(mesh, values, boundary_edge_index, t);
+        int* nodes = mesh.boundary_edges[boundary_edge_index].boundary_nodes;
+        return 0.5 * (1 - t) * values[nodes[0]]
+            + 0.5 * (1 + t) * values[nodes[1]];
     }
 };
 

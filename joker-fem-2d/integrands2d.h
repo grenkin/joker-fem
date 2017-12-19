@@ -91,13 +91,24 @@ public:
     // function value at the point with local coordinates L0, L1
     double Value (int triangle_index, double L0, double L1)
     {
-        return get_value(mesh, values, triangle_index, L0, L1);
+        double values[3];
+        for (int i = 0; i < 3; ++i) {
+            values[i] = (mesh.triangles[triangle_index].nodes[i] == node_index)
+                ? 1.0 : 0.0;
+        }
+        return L0 * values[0] + L1 * values[1] + (1 - L0 - L1) * values[2];
     }
 
     // function value at the point with parameter t (from -1 to 1)
     double BoundaryValue (int boundary_edge_index, double t)
     {
-        return get_boundary_value(mesh, values, boundary_edge_index, t);
+        double values[2];
+        for (int i = 0; i < 2; ++i) {
+            values[i] =
+                (mesh.boundary_edges[boundary_edge_index].boundary_nodes[i]
+                    == node_index) ? 1.0 : 0.0;
+        }
+        return 0.5 * (1 - t) * values[0] + 0.5 * (1 + t) * values[1];
     }
 };
 
