@@ -1,8 +1,8 @@
 #ifndef INTEGRANDS2D_H_INCLUDED
 #define INTEGRANDS2D_H_INCLUDED
 
-#include <algorithm>
 #include "splines2d.h"
+#include <algorithm>
 
 class Integrand {
     Mesh& mesh;
@@ -36,29 +36,10 @@ public:
     double Integrate (int boundary_edge_index);
 };
 
-double Integrate (Integrand& integrand)
-{
-    double ans = 0.0;
-    for (std::list<int>::iterator i = integrand.support.begin();
-        i != integrand.support.end(); ++i)
-    {
-        int triangle_index = *i;
-        ans += integrand.Integrate(triangle_index);
-    }
-    return ans;
-}
-
-double BoundaryIntegrate (BoundaryIntegrand& integrand)
-{
-    double ans = 0.0;
-    for (std::list<int>::iterator i = integrand.boundary_support.begin();
-        i != integrand.boundary_support.end(); ++i)
-    {
-        int boundary_edge_index = *i;
-        ans += integrand.Integrate(boundary_edge_index);
-    }
-    return ans;
-}
+// integrate the function over the domain
+double Integrate (Integrand& integrand);
+// integrate the function over the boundary
+double BoundaryIntegrate (BoundaryIntegrand& integrand);
 
 struct BasisFunction {
     Mesh& mesh;
@@ -68,21 +49,14 @@ public:
     std::list<int> support;
     // list of indices of boundary edges where the function is not zero
     std::list<int> boundary_support;
-    std::vector<double> values;  // values of the function at mesh nodes
-    // values of the function at boundary nodes of the mesh
-    std::vector<double> boundary_values;
 
     BasisFunction (Mesh& _mesh, int _node_index)
         : mesh(_mesh), node_index(_node_index)
     {
-        values.resize(mesh.nodes_num, 0.0);
-        values[node_index] = 1.0;
         support = mesh.triangles_for_nodes[node_index];
 
-        boundary_values.resize(mesh.boundary_nodes_num, 0.0);
         int boundary_node_index = mesh.boundary_indices[node_index];
         if (boundary_node_index != -1) {
-            boundary_values[boundary_node_index] = 1.0;
             boundary_support =
                 mesh.edges_for_boundary_nodes[boundary_node_index];
         }
@@ -112,14 +86,7 @@ public:
     }
 };
 
-std::list<int> intersect_supports (std::list<int>& s1, std::list<int>& s2)
-{
-    std::list<int> ans;
-    for (std::list<int>::iterator i = s1.begin(); i != s1.end(); ++i) {
-        if (std::find(s2.begin(), s2.end(), *i) != s2.end())
-            ans.push_back(*i);
-    }
-}
+std::list<int> intersect_supports (std::list<int>& s1, std::list<int>& s2);
 
 struct Mult_P1_Basis : public Integrand {
     FunctionP1& p1;
@@ -138,10 +105,7 @@ struct Mult_P1_Basis : public Integrand {
     }
 };
 
-Mult_P1_Basis operator* (FunctionP1& p1, BasisFunction& basis)
-{
-    return Mult_P1_Basis(p1.mesh, p1, basis);
-}
+Mult_P1_Basis operator* (FunctionP1& p1, BasisFunction& basis);
 
 struct AuxBoundaryMult_P0_Basis {
     Mesh& mesh;
@@ -175,9 +139,6 @@ struct BoundaryMult_P0_Basis_Basis : public BoundaryIntegrand {
 };
 
 BoundaryMult_P0_Basis_Basis operator* (AuxBoundaryMult_P0_Basis& aux,
-    BasisFunction& basis)
-{
-    return BoundaryMult_P0_Basis_Basis(aux.mesh, aux.p0, aux.basis, basis);
-}
+    BasisFunction& basis);
 
 #endif // INTEGRANDS2D_H_INCLUDED

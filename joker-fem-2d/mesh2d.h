@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <list>
+#include <string>
 
 struct Node {
     double x, y;
