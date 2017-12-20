@@ -37,6 +37,11 @@ struct Mesh {
     std::vector<std::list<int> > edges_for_boundary_nodes;
 
     Mesh (std::string file_name);
+    double SignedTriangleArea (int triangle_index);
+    double TriangleArea (int triangle_index);
+    double BoundaryEdgeLength (int boundary_edge_index);
+    void LocalCoefficients (int triangle_index,
+        double (&a)[3], double (&b)[3], double (&c)[3]);
 };
 
 #endif // MESH2D_H_INCLUDED
