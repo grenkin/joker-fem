@@ -15,7 +15,7 @@ struct Integrand {
         : mesh(_mesh)
     {}
 
-    // integrate the function by a given triangle
+    // integrate the function over a given triangle
     double Integrate (int triangle_index);
 };
 
@@ -30,7 +30,7 @@ struct BoundaryIntegrand {
         : mesh(_mesh)
     {}
 
-    // integrate the function by a given boundary edge
+    // integrate the function over a given boundary edge
     double Integrate (int boundary_edge_index);
 };
 
@@ -76,7 +76,7 @@ public:
     // function value at the point with local coordinates L0, L1
     double Value (int triangle_index, double L0, double L1)
     {
-        double values[3];
+        double values[3];  // function values at the triangle vertices
         for (int i = 0; i < 3; ++i) {
             values[i] = (mesh.triangles[triangle_index].nodes[i] == node_index)
                 ? 1.0 : 0.0;
@@ -87,18 +87,18 @@ public:
     // function value at the point with parameter t (from -1 to 1)
     double BoundaryValue (int boundary_edge_index, double t)
     {
-        double values[2];
+        double values[2];  // function values at the edge vertices
         for (int i = 0; i < 2; ++i) {
             values[i] =
                 (mesh.boundary_edges[boundary_edge_index].boundary_nodes[i]
-                    == node_index) ? 1.0 : 0.0;
+                    == mesh.boundary_indices[node_index]) ? 1.0 : 0.0;
         }
         return 0.5 * (1 - t) * values[0] + 0.5 * (1 + t) * values[1];
     }
 
     Vector2 GradValue (int triangle_index)
     {
-        double values[3];
+        double values[3];  // function values at the triangle vertices
         for (int i = 0; i < 3; ++i) {
             values[i] = (mesh.triangles[triangle_index].nodes[i] == node_index)
                 ? 1.0 : 0.0;

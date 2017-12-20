@@ -44,3 +44,9 @@ void Mesh::LocalCoefficients (int triangle_index, double (&a)[3], double (&b)[3]
         c[i] = nodes[nodes_ind[(i + 2) % 3]].x - nodes[nodes_ind[(i + 1) % 3]].x;
     }
 }
+
+int TriangleForPoint (double x, double y)
+{
+    // TODO: hash
+    return -1;
+}

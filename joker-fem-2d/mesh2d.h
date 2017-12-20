@@ -35,6 +35,8 @@ struct Mesh {
     std::vector<std::list<int> > triangles_for_nodes;
     // for each boundary node - a list of boundary edges containing this node
     std::vector<std::list<int> > edges_for_boundary_nodes;
+    // for each node - a list of nodes connected with this node by an edge
+    std::vector<std::list<int> > adjacent_nodes;
 
     Mesh (std::string file_name);
     double SignedTriangleArea (int triangle_index);
@@ -42,6 +44,8 @@ struct Mesh {
     double BoundaryEdgeLength (int boundary_edge_index);
     void LocalCoefficients (int triangle_index,
         double (&a)[3], double (&b)[3], double (&c)[3]);
+    // index of the triangle containing a given point
+    int TriangleForPoint (double x, double y);
 };
 
 #endif // MESH2D_H_INCLUDED

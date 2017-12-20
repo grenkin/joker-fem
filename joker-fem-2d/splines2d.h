@@ -21,6 +21,18 @@ struct FunctionP1 {
         return L0 * values[nodes[0]] + L1 * values[nodes[1]]
             + (1 - L0 - L1) * values[nodes[2]];
     }
+
+    // function value at point (x, y)
+    double ValueXY (double x, double y)
+    {
+        int triangle_index = mesh.TriangleForPoint(x, y);
+        double A = mesh.SignedTriangleArea(triangle_index);
+        double a[3], b[3], c[3];
+        mesh.LocalCoefficients(triangle_index, a, b, c);
+        double L0 = 0.5 / A * (a[0] + b[0] * x + c[0] * y);
+        double L1 = 0.5 / A * (a[1] + b[1] * x + c[1] * y);
+        return Value(triangle_index, L0, L1);
+    }
 };
 
 // piecewise linear function on the boundary
