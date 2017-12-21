@@ -15,7 +15,7 @@ struct FunctionP1 {
     }
 
     // function value at the point with local coordinates L0, L1
-    double Value (int triangle_index, double L0, double L1)
+    double Value (int triangle_index, double L0, double L1) const
     {
         int* nodes = mesh->triangles[triangle_index].nodes;
         return L0 * values[nodes[0]] + L1 * values[nodes[1]]
@@ -23,7 +23,7 @@ struct FunctionP1 {
     }
 
     // function value at point (x, y)
-    double ValueXY (double x, double y)
+    double ValueXY (double x, double y) const
     {
         int triangle_index = mesh->TriangleForPoint(x, y);
         if (triangle_index == -1)
@@ -47,7 +47,7 @@ struct BoundaryFunctionP1 {
     }
 
     // function value at the point with parameter t (from -1 to 1)
-    double Value (int boundary_edge_index, double t)
+    double Value (int boundary_edge_index, double t) const
     {
         int* nodes = mesh->boundary_edges[boundary_edge_index].boundary_nodes;
         return 0.5 * (1 - t) * values[nodes[0]]
@@ -67,7 +67,7 @@ struct BoundaryFunctionP0 {
         values.resize(mesh->boundary_edges_num);
     }
 
-    double Value (int boundary_edge_index)
+    double Value (int boundary_edge_index) const
     {
         return values[boundary_edge_index];
     }

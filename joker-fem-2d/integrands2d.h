@@ -9,14 +9,14 @@ struct Integrand {
     // list of indices of triangles where the function is not zero
     std::list<int> support;
     // function value at the point with local coordinates L0, L1
-    virtual double Value (int triangle_index, double L0, double L1) = 0;
+    virtual double Value (int triangle_index, double L0, double L1) const = 0;
 
     Integrand (Mesh* _mesh)
         : mesh(_mesh)
     {}
 
     // integrate the function over a given triangle
-    double Integrate (int triangle_index);
+    double Integrate (int triangle_index) const;
 };
 
 struct BoundaryIntegrand {
@@ -24,20 +24,20 @@ struct BoundaryIntegrand {
     // list of indices of boundary edges where the function is not zero
     std::list<int> boundary_support;
     // function value at the point with parameter t (from -1 to 1)
-    virtual double Value (int boundary_edge_index, double t) = 0;
+    virtual double Value (int boundary_edge_index, double t) const = 0;
 
     BoundaryIntegrand (Mesh* _mesh)
         : mesh(_mesh)
     {}
 
     // integrate the function over a given boundary edge
-    double Integrate (int boundary_edge_index);
+    double Integrate (int boundary_edge_index) const;
 };
 
 // integrate the function over the domain
-double Integrate (Integrand& integrand);
+double Integrate (const Integrand& integrand);
 // integrate the function over the boundary
-double BoundaryIntegrate (BoundaryIntegrand& integrand);
+double BoundaryIntegrate (const BoundaryIntegrand& integrand);
 
 struct Vector2 {
     double x, y;
@@ -54,12 +54,15 @@ struct Vector2 {
 
 struct BasisFunction {
     Mesh* mesh;
-public:
     int node_index;
     // list of indices of triangles where the function is not zero
     std::list<int> support;
     // list of indices of boundary edges where the function is not zero
     std::list<int> boundary_support;
+
+    BasisFunction (Mesh& _mesh)
+        : mesh(&_mesh), node_index(-1)
+    {}
 
     BasisFunction (Mesh& _mesh, int _node_index)
         : mesh(&_mesh), node_index(_node_index)
@@ -74,7 +77,7 @@ public:
     }
 
     // function value at the point with local coordinates L0, L1
-    double Value (int triangle_index, double L0, double L1)
+    double Value (int triangle_index, double L0, double L1) const
     {
         double values[3];  // function values at the triangle vertices
         for (int i = 0; i < 3; ++i) {
@@ -85,7 +88,7 @@ public:
     }
 
     // function value at the point with parameter t (from -1 to 1)
-    double BoundaryValue (int boundary_edge_index, double t)
+    double BoundaryValue (int boundary_edge_index, double t) const
     {
         double values[2];  // function values at the edge vertices
         for (int i = 0; i < 2; ++i) {
@@ -97,7 +100,7 @@ public:
     }
 
     // function gradient value at a given triangle
-    Vector2 GradValue (int triangle_index)
+    Vector2 GradValue (int triangle_index) const
     {
         double values[3];  // function values at the triangle vertices
         for (int i = 0; i < 3; ++i) {
@@ -113,40 +116,42 @@ public:
     }
 };
 
-std::list<int> intersect_supports (std::list<int>&, std::list<int>&);
+std::list<int> intersect_supports (const std::list<int>&,
+    const std::list<int>&);
 
 struct Mult_P1_Basis : public Integrand {
-    FunctionP1& p1;
-    BasisFunction& basis;
+    const FunctionP1& p1;
+    const BasisFunction& basis;
 
-    Mult_P1_Basis (Mesh* _mesh, FunctionP1& _p1, BasisFunction& _basis)
+    Mult_P1_Basis (Mesh* _mesh, const FunctionP1& _p1,
+        const BasisFunction& _basis)
         : Integrand(_mesh), p1(_p1), basis(_basis)
     {
         support = basis.support;
     }
 
-    double Value (int triangle_index, double L0, double L1)
+    double Value (int triangle_index, double L0, double L1) const
     {
         return p1.Value(triangle_index, L0, L1)
             * basis.Value(triangle_index, L0, L1);
     }
 };
 
-Mult_P1_Basis operator* (FunctionP1&, BasisFunction&);
+Mult_P1_Basis operator* (const FunctionP1&, const BasisFunction&);
 
 struct Mult_P1_Basis_Basis : public Integrand {
-    FunctionP1& p1;
-    BasisFunction& basis1;
-    BasisFunction& basis2;
+    const FunctionP1& p1;
+    const BasisFunction& basis1;
+    const BasisFunction& basis2;
 
-    Mult_P1_Basis_Basis (Mesh* _mesh, FunctionP1& _p1, BasisFunction& _basis1,
-        BasisFunction& _basis2)
+    Mult_P1_Basis_Basis (Mesh* _mesh, const FunctionP1& _p1,
+        const BasisFunction& _basis1, const BasisFunction& _basis2)
         : Integrand(_mesh), p1(_p1), basis1(_basis1), basis2(_basis2)
     {
         support = intersect_supports(basis1.support, basis2.support);
     }
 
-    double Value (int triangle_index, double L0, double L1)
+    double Value (int triangle_index, double L0, double L1) const
     {
         return p1.Value(triangle_index, L0, L1)
             * basis1.Value(triangle_index, L0, L1)
@@ -154,95 +159,100 @@ struct Mult_P1_Basis_Basis : public Integrand {
     }
 };
 
-Mult_P1_Basis_Basis operator* (Mult_P1_Basis&, BasisFunction&);
+Mult_P1_Basis_Basis operator* (const Mult_P1_Basis&, const BasisFunction&);
 
 struct GradBasis {
-    BasisFunction& basis;
+    const BasisFunction& basis;
 
-    GradBasis (BasisFunction& _basis)
+    GradBasis (const BasisFunction& _basis)
         : basis(_basis)
     {}
 };
 
-GradBasis grad (BasisFunction&);
+GradBasis grad (const BasisFunction&);
 
 struct Mult_GradBasis_GradBasis : public Integrand {
-    BasisFunction& basis1;
-    BasisFunction& basis2;
+    const BasisFunction& basis1;
+    const BasisFunction& basis2;
 
-    Mult_GradBasis_GradBasis (Mesh* _mesh, BasisFunction& _basis1,
-        BasisFunction& _basis2)
+    Mult_GradBasis_GradBasis (Mesh* _mesh, const BasisFunction& _basis1,
+        const BasisFunction& _basis2)
         : Integrand(_mesh), basis1(_basis1), basis2(_basis2)
     {
         support = intersect_supports(basis1.support, basis2.support);
     }
 
-    double Value (int triangle_index, double L0, double L1)
+    double Value (int triangle_index, double L0, double L1) const
     {
         return basis1.GradValue(triangle_index)
             * basis2.GradValue(triangle_index);
     }
 };
 
-Mult_GradBasis_GradBasis operator* (GradBasis&, GradBasis&);
+Mult_GradBasis_GradBasis operator* (const GradBasis&, const GradBasis&);
 
 struct AuxBoundaryMult_P0_P1 {
-    BoundaryFunctionP0& p0;
-    BoundaryFunctionP1& p1;
+    const BoundaryFunctionP0& p0;
+    const BoundaryFunctionP1& p1;
 
-    AuxBoundaryMult_P0_P1 (BoundaryFunctionP0& _p0, BoundaryFunctionP1& _p1)
+    AuxBoundaryMult_P0_P1 (const BoundaryFunctionP0& _p0,
+        const BoundaryFunctionP1& _p1)
         : p0(_p0), p1(_p1)
     {}
 };
 
-AuxBoundaryMult_P0_P1 operator* (BoundaryFunctionP0&, BoundaryFunctionP1&);
+AuxBoundaryMult_P0_P1 operator* (const BoundaryFunctionP0&,
+    const BoundaryFunctionP1&);
 
 struct BoundaryMult_P0_P1_Basis : public BoundaryIntegrand {
-    BoundaryFunctionP0& p0;
-    BoundaryFunctionP1& p1;
-    BasisFunction& basis;
+    const BoundaryFunctionP0& p0;
+    const BoundaryFunctionP1& p1;
+    const BasisFunction& basis;
 
-    BoundaryMult_P0_P1_Basis (Mesh* _mesh, BoundaryFunctionP0& _p0,
-        BoundaryFunctionP1& _p1, BasisFunction& _basis)
+    BoundaryMult_P0_P1_Basis (Mesh* _mesh, const BoundaryFunctionP0& _p0,
+        const BoundaryFunctionP1& _p1, const BasisFunction& _basis)
         : BoundaryIntegrand(_mesh), p0(_p0), p1(_p1), basis(_basis)
     {
         boundary_support = basis.boundary_support;
     }
 
-    double Value (int boundary_edge_index, double t)
+    double Value (int boundary_edge_index, double t) const
     {
         return p0.Value(boundary_edge_index) * p1.Value(boundary_edge_index, t)
             * basis.BoundaryValue(boundary_edge_index, t);
     }
 };
 
-BoundaryMult_P0_P1_Basis operator* (AuxBoundaryMult_P0_P1&, BasisFunction&);
+BoundaryMult_P0_P1_Basis operator* (const AuxBoundaryMult_P0_P1&,
+    const BasisFunction&);
 
 struct AuxBoundaryMult_P0_Basis {
-    BoundaryFunctionP0& p0;
-    BasisFunction& basis;
+    const BoundaryFunctionP0& p0;
+    const BasisFunction& basis;
 
-    AuxBoundaryMult_P0_Basis (BoundaryFunctionP0& _p0, BasisFunction& _basis)
+    AuxBoundaryMult_P0_Basis (const BoundaryFunctionP0& _p0,
+        const BasisFunction& _basis)
         : p0(_p0), basis(_basis)
     {}
 };
 
-AuxBoundaryMult_P0_Basis operator* (BoundaryFunctionP0&, BasisFunction&);
+AuxBoundaryMult_P0_Basis operator* (const BoundaryFunctionP0&,
+    const BasisFunction&);
 
 struct BoundaryMult_P0_Basis_Basis : public BoundaryIntegrand {
-    BoundaryFunctionP0& p0;
-    BasisFunction& basis1;
-    BasisFunction& basis2;
+    const BoundaryFunctionP0& p0;
+    const BasisFunction& basis1;
+    const BasisFunction& basis2;
 
-    BoundaryMult_P0_Basis_Basis (Mesh* _mesh, BoundaryFunctionP0& _p0,
-        BasisFunction& _basis1, BasisFunction& _basis2)
+    BoundaryMult_P0_Basis_Basis (Mesh* _mesh, const BoundaryFunctionP0& _p0,
+        const BasisFunction& _basis1, const BasisFunction& _basis2)
         : BoundaryIntegrand(_mesh), p0(_p0), basis1(_basis1), basis2(_basis2)
     {
         boundary_support = intersect_supports(basis1.boundary_support,
             basis2.boundary_support);
     }
 
-    double Value (int boundary_edge_index, double t)
+    double Value (int boundary_edge_index, double t) const
     {
         return p0.Value(boundary_edge_index)
             * basis1.BoundaryValue(boundary_edge_index, t)
@@ -250,7 +260,7 @@ struct BoundaryMult_P0_Basis_Basis : public BoundaryIntegrand {
     }
 };
 
-BoundaryMult_P0_Basis_Basis operator* (AuxBoundaryMult_P0_Basis&,
-    BasisFunction&);
+BoundaryMult_P0_Basis_Basis operator* (const AuxBoundaryMult_P0_Basis&,
+    const BasisFunction&);
 
 #endif // INTEGRANDS2D_H_INCLUDED
