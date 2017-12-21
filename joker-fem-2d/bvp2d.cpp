@@ -10,7 +10,7 @@ void SolveBVP (const ProblemData& data, const Parameters& param,
     for (int i = 0; i < nodes_num; ++i)
         phi[i] = BasisFunction(data.mesh, i);
 
-    LinearSystem sys(data.N, nodes_num);
+    LinearSystem sys(data.N, nodes_num, param);
     for (int i = 0; i < data.N; ++i) {
         for (int j = 0; j < data.mesh.nodes_num; ++j) {
             for (auto s : data.mesh.adjacent_nodes[j]) {
@@ -32,4 +32,5 @@ void SolveBVP (const ProblemData& data, const Parameters& param,
             );
         }
     }
+    sys.Solve(sol);
 }

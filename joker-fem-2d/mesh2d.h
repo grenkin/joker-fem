@@ -36,6 +36,7 @@ struct Mesh {
     // for each boundary node - a list of boundary edges containing this node
     std::vector<std::list<int> > edges_for_boundary_nodes;
     // for each node - a list of nodes connected with this node by an edge
+    // and the node itself
     std::vector<std::list<int> > adjacent_nodes;
 
     Mesh (std::string file_name);
