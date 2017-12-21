@@ -12,7 +12,7 @@ double Integrand::Integrate (int triangle_index)
     double ans = 0.0;
     for (int i = 0; i < POINTS_NUM; ++i)
         ans += WEIGHTS[i] * Value(triangle_index, POINTS_L0[i], POINTS_L1[i]);
-    return 2 * mesh.TriangleArea(triangle_index) * ans;
+    return 2 * mesh->TriangleArea(triangle_index) * ans;
 }
 
 // Gauss quadrature, see Zienkiewicz et al., section 5.9.2
@@ -25,7 +25,7 @@ double BoundaryIntegrand::Integrate (int boundary_edge_index)
     double ans = 0.0;
     for (int i = 0; i < POINTS_NUM; ++i)
         ans += WEIGHTS[i] * Value(boundary_edge_index, POINTS[i]);
-    return 0.5 * mesh.BoundaryEdgeLength(boundary_edge_index) * ans;
+    return 0.5 * mesh->BoundaryEdgeLength(boundary_edge_index) * ans;
 }
 
 double Integrate (Integrand& integrand)
