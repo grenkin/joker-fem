@@ -31,31 +31,23 @@ double BoundaryIntegrand::Integrate (int boundary_edge_index)
 double Integrate (Integrand& integrand)
 {
     double ans = 0.0;
-    for (std::list<int>::iterator i = integrand.support.begin();
-        i != integrand.support.end(); ++i)
-    {
-        int triangle_index = *i;
+    for (auto triangle_index : integrand.support)
         ans += integrand.Integrate(triangle_index);
-    }
     return ans;
 }
 
 double BoundaryIntegrate (BoundaryIntegrand& integrand)
 {
     double ans = 0.0;
-    for (std::list<int>::iterator i = integrand.boundary_support.begin();
-        i != integrand.boundary_support.end(); ++i)
-    {
-        int boundary_edge_index = *i;
+    for (auto boundary_edge_index : integrand.boundary_support)
         ans += integrand.Integrate(boundary_edge_index);
-    }
     return ans;
 }
 
 std::list<int> intersect_supports (std::list<int>& s1, std::list<int>& s2)
 {
     std::list<int> ans;
-    for (std::list<int>::iterator i = s1.begin(); i != s1.end(); ++i) {
+    for (auto i = s1.begin(); i != s1.end(); ++i) {
         if (std::find(s2.begin(), s2.end(), *i) != s2.end())
             ans.push_back(*i);
     }
@@ -86,22 +78,22 @@ Mult_GradBasis_GradBasis operator* (GradBasis& grad_basis1,
 
 AuxBoundaryMult_P0_P1 operator* (BoundaryFunctionP0& p0, BoundaryFunctionP1& p1)
 {
-    return AuxBoundaryMult_P0_P1(p0.mesh, p0, p1);
+    return AuxBoundaryMult_P0_P1(p0, p1);
 }
 
 BoundaryMult_P0_P1_Basis operator* (AuxBoundaryMult_P0_P1& aux, BasisFunction& basis)
 {
-    return BoundaryMult_P0_P1_Basis(aux.mesh, aux.p0, aux.p1, basis);
+    return BoundaryMult_P0_P1_Basis(aux.p0.mesh, aux.p0, aux.p1, basis);
 }
 
 AuxBoundaryMult_P0_Basis operator* (BoundaryFunctionP0& p0,
     BasisFunction& basis)
 {
-    return AuxBoundaryMult_P0_Basis(p0.mesh, p0, basis);
+    return AuxBoundaryMult_P0_Basis(p0, basis);
 }
 
 BoundaryMult_P0_Basis_Basis operator* (AuxBoundaryMult_P0_Basis& aux,
     BasisFunction& basis)
 {
-    return BoundaryMult_P0_Basis_Basis(aux.mesh, aux.p0, aux.basis, basis);
+    return BoundaryMult_P0_Basis_Basis(aux.p0.mesh, aux.p0, aux.basis, basis);
 }

@@ -96,6 +96,7 @@ public:
         return 0.5 * (1 - t) * values[0] + 0.5 * (1 + t) * values[1];
     }
 
+    // function gradient value at a given triangle
     Vector2 GradValue (int triangle_index)
     {
         double values[3];  // function values at the triangle vertices
@@ -113,7 +114,7 @@ public:
     }
 };
 
-std::list<int> intersect_supports (std::list<int>& s1, std::list<int>& s2);
+std::list<int> intersect_supports (std::list<int>&, std::list<int>&);
 
 struct Mult_P1_Basis : public Integrand {
     FunctionP1& p1;
@@ -187,13 +188,11 @@ struct Mult_GradBasis_GradBasis : public Integrand {
 Mult_GradBasis_GradBasis operator* (GradBasis&, GradBasis&);
 
 struct AuxBoundaryMult_P0_P1 {
-    Mesh& mesh;
     BoundaryFunctionP0& p0;
     BoundaryFunctionP1& p1;
 
-    AuxBoundaryMult_P0_P1 (Mesh& _mesh, BoundaryFunctionP0& _p0,
-        BoundaryFunctionP1& _p1)
-        : mesh(_mesh), p0(_p0), p1(_p1)
+    AuxBoundaryMult_P0_P1 (BoundaryFunctionP0& _p0, BoundaryFunctionP1& _p1)
+        : p0(_p0), p1(_p1)
     {}
 };
 
@@ -221,13 +220,11 @@ struct BoundaryMult_P0_P1_Basis : public BoundaryIntegrand {
 BoundaryMult_P0_P1_Basis operator* (AuxBoundaryMult_P0_P1&, BasisFunction&);
 
 struct AuxBoundaryMult_P0_Basis {
-    Mesh& mesh;
     BoundaryFunctionP0& p0;
     BasisFunction& basis;
 
-    AuxBoundaryMult_P0_Basis (Mesh& _mesh, BoundaryFunctionP0& _p0,
-        BasisFunction& _basis)
-        : mesh(_mesh), p0(_p0), basis(_basis)
+    AuxBoundaryMult_P0_Basis (BoundaryFunctionP0& _p0, BasisFunction& _basis)
+        : p0(_p0), basis(_basis)
     {}
 };
 

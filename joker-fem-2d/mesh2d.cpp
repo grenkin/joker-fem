@@ -1,6 +1,11 @@
 #include "mesh2d.h"
 #include <cmath>
 
+Mesh::Mesh (std::string file_name)
+{
+    // TODO
+}
+
 double det_3_3 (double a11, double a12, double a13,
     double a21, double a22, double a23, double a31, double a32, double a33)
 {
@@ -45,8 +50,17 @@ void Mesh::LocalCoefficients (int triangle_index, double (&a)[3], double (&b)[3]
     }
 }
 
-int TriangleForPoint (double x, double y)
+bool point_in_triangle (double x, double y, int triangle_index)
+{
+    // TODO
+}
+
+int Mesh::TriangleForPoint (double x, double y)
 {
     // TODO: hash
+    for (int i = 0; i < triangles_num; ++i) {
+        if (point_in_triangle(x, y, i))
+            return i;
+    }
     return -1;
 }

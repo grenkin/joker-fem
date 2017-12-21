@@ -26,6 +26,8 @@ struct FunctionP1 {
     double ValueXY (double x, double y)
     {
         int triangle_index = mesh.TriangleForPoint(x, y);
+        if (triangle_index == -1)
+            throw "The point does not belong to the domain.";
         double A = mesh.SignedTriangleArea(triangle_index);
         double a[3], b[3], c[3];
         mesh.LocalCoefficients(triangle_index, a, b, c);
