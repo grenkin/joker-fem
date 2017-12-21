@@ -28,11 +28,8 @@ struct FunctionP1 {
         int triangle_index = mesh.TriangleForPoint(x, y);
         if (triangle_index == -1)
             throw "The point does not belong to the domain.";
-        double A = mesh.SignedTriangleArea(triangle_index);
-        double a[3], b[3], c[3];
-        mesh.LocalCoefficients(triangle_index, a, b, c);
-        double L0 = 0.5 / A * (a[0] + b[0] * x + c[0] * y);
-        double L1 = 0.5 / A * (a[1] + b[1] * x + c[1] * y);
+        double L0, L1;
+        mesh.LocalCoordinates(triangle_index, x, y, L0, L1);
         return Value(triangle_index, L0, L1);
     }
 };

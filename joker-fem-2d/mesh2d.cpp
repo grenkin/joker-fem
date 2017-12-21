@@ -50,16 +50,33 @@ void Mesh::LocalCoefficients (int triangle_index, double (&a)[3], double (&b)[3]
     }
 }
 
-bool point_in_triangle (double x, double y, int triangle_index)
+void Mesh::LocalCoordinates (int triangle_index, double x, double y,
+    double& L0, double& L1)
 {
-    // TODO
+    double A = SignedTriangleArea(triangle_index);
+    double a[3], b[3], c[3];
+    LocalCoefficients(triangle_index, a, b, c);
+    L0 = 0.5 / A * (a[0] + b[0] * x + c[0] * y);
+    L1 = 0.5 / A * (a[1] + b[1] * x + c[1] * y);
+}
+
+bool Mesh::PointInTriangle (int triangle_index, double x, double y)
+{
+    const double eps = 1e-5;
+    double L[3];
+    LocalCoordinates(triangle_index, x, y, L[0], L[1]);
+    L[2] = 1 - L[0] - L[1];
+    bool ans = true;
+    for (int i = 0; i < 3; ++i)
+        ans = ans && (0 - eps < L[i]) && (L[i] < 1 + eps);
+    return ans;
 }
 
 int Mesh::TriangleForPoint (double x, double y)
 {
     // TODO: hash
     for (int i = 0; i < triangles_num; ++i) {
-        if (point_in_triangle(x, y, i))
+        if (PointInTriangle(x, y, i))
             return i;
     }
     return -1;

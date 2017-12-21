@@ -44,6 +44,10 @@ struct Mesh {
     double BoundaryEdgeLength (int boundary_edge_index);
     void LocalCoefficients (int triangle_index,
         double (&a)[3], double (&b)[3], double (&c)[3]);
+    // local coordinates of a given point
+    void LocalCoordinates (int triangle_index, double x, double y,
+        double& L0, double& L1);
+    bool PointInTriangle (int triangle_index, double x, double y);
     // index of the triangle containing a given point
     int TriangleForPoint (double x, double y);
 };

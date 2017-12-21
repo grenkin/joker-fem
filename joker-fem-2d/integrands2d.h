@@ -104,7 +104,6 @@ public:
             values[i] = (mesh.triangles[triangle_index].nodes[i] == node_index)
                 ? 1.0 : 0.0;
         }
-
         double a[3], b[3], c[3];
         double A = mesh.SignedTriangleArea(triangle_index);
         mesh.LocalCoefficients(triangle_index, a, b, c);
