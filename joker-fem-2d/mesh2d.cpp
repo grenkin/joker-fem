@@ -2,6 +2,7 @@
 #include <array>
 #include <cmath>
 #include <fstream>
+#include <algorithm>
 
 void Mesh::add_boundary_node (int node_index)
 {
@@ -11,6 +12,13 @@ void Mesh::add_boundary_node (int node_index)
         boundary_nodes[boundary_nodes_num] = node_index;
         ++ boundary_nodes_num;
     }
+}
+
+void Mesh::add_adjacent_node (int node, int node_to_add)
+{
+    std::list<int>& l = adjacent_nodes[node];
+    if (std::find(l.begin(), l.end(), node_to_add) == l.end())
+        l.push_back(node_to_add);
 }
 
 Mesh::Mesh (std::string file_name)
@@ -77,7 +85,18 @@ Mesh::Mesh (std::string file_name)
         for (int j = 0; j < 3; ++j)
             triangles_for_nodes[triangles[i].nodes[j]].push_back(i);
     }
-    // TODO: set adjacent_nodes
+    adjacent_nodes.resize(nodes_num);
+    for (int i = 0; i < nodes_num; ++i)
+        adjacent_nodes[i].push_back(i);
+    for (int i = 0; i < triangles_num; ++i) {
+        int* nodes = triangles[i].nodes;
+        for (int j = 0; j < 3; ++j) {
+            for (int k = j + 1; k < 3; ++k) {
+                add_adjacent_node(nodes[j], nodes[k]);
+                add_adjacent_node(nodes[k], nodes[j]);
+            }
+        }
+    }
 }
 
 double det_3_3 (double a11, double a12, double a13,

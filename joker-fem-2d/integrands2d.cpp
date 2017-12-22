@@ -1,5 +1,6 @@
 #include "integrands2d.h"
 #include <cmath>
+#include <algorithm>
 
 double Integrand::Integrate (int triangle_index) const
 {

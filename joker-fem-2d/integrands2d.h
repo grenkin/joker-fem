@@ -2,7 +2,6 @@
 #define INTEGRANDS2D_H_INCLUDED
 
 #include "splines2d.h"
-#include <algorithm>
 
 struct Integrand {
     Mesh* mesh;

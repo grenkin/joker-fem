@@ -21,6 +21,7 @@ struct BoundaryEdge {
 
 class Mesh {
     void add_boundary_node (int node_index);
+    void add_adjacent_node (int node, int node_to_add);
 public:
     // numbers of mesh elements
     int nodes_num, triangles_num, boundary_edges_num;
