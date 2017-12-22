@@ -1,9 +1,83 @@
 #include "mesh2d.h"
+#include <array>
 #include <cmath>
+#include <fstream>
+
+void Mesh::add_boundary_node (int node_index)
+{
+    if (boundary_indices[node_index] == -1) {
+        boundary_indices[node_index] = boundary_nodes_num;
+        boundary_nodes.resize(boundary_nodes_num + 1);
+        boundary_nodes[boundary_nodes_num] = node_index;
+        ++ boundary_nodes_num;
+    }
+}
 
 Mesh::Mesh (std::string file_name)
 {
-    // TODO
+    std::ifstream fin(file_name);
+    if (!fin.is_open())
+        throw "Error opening the file " + file_name;
+
+    std::string dummy_str;
+    int dummy_int;
+    for (int i = 0; i < 10; ++i)
+        std::getline(fin, dummy_str);
+
+    // Vertices
+    fin >> dummy_str;
+    fin >> nodes_num;
+    nodes.resize(nodes_num);
+    for (int i = 0; i < nodes_num; ++i)
+        fin >> nodes[i].x >> nodes[i].y >> dummy_int;
+
+    // Edges
+    fin >> dummy_str;
+    fin >> boundary_edges_num;
+    std::vector<std::array<int, 2> > edges;
+    edges.resize(boundary_edges_num);
+    for (int i = 0; i < boundary_edges_num; ++i) {
+        for (int j = 0; j < 2; ++j) {
+            fin >> edges[i][j];
+            --edges[i][j];
+        }
+        fin >> dummy_int;
+    }
+    boundary_nodes_num = 0;
+    boundary_indices.resize(nodes_num);
+    for (int i = 0; i < nodes_num; ++i)
+        boundary_indices[i] = -1;
+    for (int i = 0; i < boundary_edges_num; ++i) {
+        for (int j = 0; j < 2; ++j)
+            add_boundary_node(edges[i][j]);
+    }
+    boundary_edges.resize(boundary_edges_num);
+    edges_for_boundary_nodes.resize(boundary_nodes_num);
+    for (int i = 0; i < boundary_edges_num; ++i) {
+        for (int j = 0; j < 2; ++j) {
+            int boundary_node = boundary_indices[edges[i][j]];
+            boundary_edges[i].boundary_nodes[j] = boundary_node;
+            edges_for_boundary_nodes[boundary_node].push_back(i);
+        }
+    }
+
+    // Triangles
+    fin >> dummy_str;
+    fin >> triangles_num;
+    triangles.resize(triangles_num);
+    for (int i = 0; i < triangles_num; ++i) {
+        for (int j = 0; j < 3; ++j) {
+            fin >> triangles[i].nodes[j];
+            --triangles[i].nodes[j];
+        }
+        fin >> dummy_int;
+    }
+    triangles_for_nodes.resize(nodes_num);
+    for (int i = 0; i < triangles_num; ++i) {
+        for (int j = 0; j < 3; ++j)
+            triangles_for_nodes[triangles[i].nodes[j]].push_back(i);
+    }
+    // TODO: set adjacent_nodes
 }
 
 double det_3_3 (double a11, double a12, double a13,

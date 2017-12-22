@@ -19,7 +19,9 @@ struct BoundaryEdge {
     int boundary_nodes[2];
 };
 
-struct Mesh {
+class Mesh {
+    void add_boundary_node (int node_index);
+public:
     // numbers of mesh elements
     int nodes_num, triangles_num, boundary_edges_num;
     std::vector<Node> nodes;

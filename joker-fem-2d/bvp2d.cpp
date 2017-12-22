@@ -13,14 +13,16 @@ void SolveBVP (const ProblemData& data, const Parameters& param,
     LinearSystem sys(data.N, nodes_num, param);
     for (int i = 0; i < data.N; ++i) {
         for (int j = 0; j < data.mesh.nodes_num; ++j) {
-            for (auto s : data.mesh.adjacent_nodes[j]) {
+            //for (auto s : data.mesh.adjacent_nodes[j]) {
+            for (int s = 0; s < data.mesh.nodes_num; ++s) {
                 sys.AddCoeff(i, j, i, s,
                     data.a[i] * Integrate(grad(phi[s]) * grad(phi[j]))
                         + BoundaryIntegrate(data.b[i] * phi[s] * phi[j])
                 );
             }
             for (int k = 0; k < data.N; ++k) {
-                for (auto s : data.mesh.adjacent_nodes[j]) {
+                //for (auto s : data.mesh.adjacent_nodes[j]) {
+                for (int s = 0; s < data.mesh.nodes_num; ++s) {
                     sys.AddCoeff(i, j, k, s,
                         Integrate(data.q[i][k] * phi[s] * phi[j])
                     );

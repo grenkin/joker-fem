@@ -161,15 +161,15 @@ struct Mult_P1_Basis_Basis : public Integrand {
 
 Mult_P1_Basis_Basis operator* (const Mult_P1_Basis&, const BasisFunction&);
 
-struct GradBasis {
+struct AuxGradBasis {
     const BasisFunction& basis;
 
-    GradBasis (const BasisFunction& _basis)
+    AuxGradBasis (const BasisFunction& _basis)
         : basis(_basis)
     {}
 };
 
-GradBasis grad (const BasisFunction&);
+AuxGradBasis grad (const BasisFunction&);
 
 struct Mult_GradBasis_GradBasis : public Integrand {
     const BasisFunction& basis1;
@@ -189,7 +189,7 @@ struct Mult_GradBasis_GradBasis : public Integrand {
     }
 };
 
-Mult_GradBasis_GradBasis operator* (const GradBasis&, const GradBasis&);
+Mult_GradBasis_GradBasis operator* (const AuxGradBasis&, const AuxGradBasis&);
 
 struct AuxBoundaryMult_P0_P1 {
     const BoundaryFunctionP0& p0;

@@ -67,13 +67,13 @@ Mult_P1_Basis_Basis operator* (const Mult_P1_Basis& p1_basis,
         p1_basis.basis, basis);
 }
 
-GradBasis grad (const BasisFunction& basis)
+AuxGradBasis grad (const BasisFunction& basis)
 {
-    return GradBasis(basis);
+    return AuxGradBasis(basis);
 }
 
-Mult_GradBasis_GradBasis operator* (const GradBasis& grad_basis1,
-    const GradBasis& grad_basis2)
+Mult_GradBasis_GradBasis operator* (const AuxGradBasis& grad_basis1,
+    const AuxGradBasis& grad_basis2)
 {
     return Mult_GradBasis_GradBasis(grad_basis1.basis.mesh, grad_basis1.basis,
         grad_basis2.basis);
