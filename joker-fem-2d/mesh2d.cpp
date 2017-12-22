@@ -150,7 +150,7 @@ int Mesh::TriangleForPoint (double x, double y)
 {
     // TODO: hash
     for (int i = 0; i < triangles_num; ++i) {
-        if (PointInTriangle(x, y, i))
+        if (PointInTriangle(i, x, y))
             return i;
     }
     return -1;
