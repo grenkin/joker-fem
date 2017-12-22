@@ -39,7 +39,7 @@ Mesh::Mesh (std::string file_name)
     for (int i = 0; i < boundary_edges_num; ++i) {
         for (int j = 0; j < 2; ++j) {
             fin >> edges[i][j];
-            --edges[i][j];
+            -- edges[i][j];
         }
         fin >> dummy_int;
     }
@@ -68,7 +68,7 @@ Mesh::Mesh (std::string file_name)
     for (int i = 0; i < triangles_num; ++i) {
         for (int j = 0; j < 3; ++j) {
             fin >> triangles[i].nodes[j];
-            --triangles[i].nodes[j];
+            -- triangles[i].nodes[j];
         }
         fin >> dummy_int;
     }

@@ -5,9 +5,10 @@
 #include <boost/numeric/mtl/mtl.hpp>
 
 class LinearSystem {
-    int N, nodes_num;
     typedef mtl::mat::inserter<mtl::compressed2D<double>,
         mtl::update_plus<double> > inserter_type;
+
+    int N, nodes_num;
     int unknowns;
     mtl::compressed2D<double> A;
     mtl::dense_vector<double> b;
