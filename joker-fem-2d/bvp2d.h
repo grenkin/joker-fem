@@ -37,6 +37,8 @@ struct Parameters {
     }
 };
 
-void SolveBVP (const ProblemData&, const Parameters&, std::vector<FunctionP1>&);
+// sol contains the initial guess when calling the function
+// and contains the solution after function call
+void SolveBVP (const ProblemData&, const Parameters&, std::vector<FunctionP1>& sol);
 
 #endif // BVP2D_H_INCLUDED

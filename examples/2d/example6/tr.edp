@@ -1,0 +1,22 @@
+// FreeFem++ code
+
+real R = 2.0;
+int n;
+
+border C(t = 0, 2*pi){x = R * cos(t); y = R * sin(t);}
+
+n = 20;
+mesh Th20 = buildmesh(C(n));
+savemesh(Th20, "tr20.mesh");
+
+n = 40;
+mesh Th40 = buildmesh(C(n));
+savemesh(Th40, "tr40.mesh");
+
+n = 80;
+mesh Th80 = buildmesh(C(n));
+savemesh(Th80, "tr80.mesh");
+
+n = 160;
+mesh Th160 = buildmesh(C(n));
+savemesh(Th160, "tr160.mesh");
