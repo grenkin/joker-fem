@@ -49,7 +49,15 @@ int main() {
         for (int i = 0; i < mesh.boundary_nodes_num; ++i) {
             double x = mesh.nodes[mesh.boundary_nodes[i]].x;
             double y = mesh.nodes[mesh.boundary_nodes[i]].y;
-            if (eq(x, 0))
+            if (eq(x, 0) && eq(y, 0))
+                data.w[0].values[i] = 0.5 * y * y + 0.5 * x * x;
+            else if (eq(x, 0) && eq(y, L))
+                data.w[0].values[i] = 0.5 * y * y + 0.5 * (3 + x * x);
+            else if (eq(x, L) && eq(y, 0))
+                data.w[0].values[i] = 0.5 * (3 + y * y) + 0.5 * x * x;
+            else if (eq(x, L) && eq(y, L))
+                data.w[0].values[i] = 0.5 * (3 + y * y) + 0.5 * (3 + x * x);
+            else if (eq(x, 0))
                 data.w[0].values[i] = y * y;
             else if (eq(x, L))
                 data.w[0].values[i] = 3 + y * y;
