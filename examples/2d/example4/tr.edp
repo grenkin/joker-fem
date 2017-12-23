@@ -1,0 +1,24 @@
+// FreeFem++ code
+
+real L = pi;
+int meshsize;
+
+meshsize = 20;
+mesh Th20 = square(meshsize, meshsize, [L * x, L * y]);
+savemesh(Th20, "tr20.mesh");
+
+meshsize = 40;
+mesh Th40 = square(meshsize, meshsize, [L * x, L * y]);
+savemesh(Th40, "tr40.mesh");
+
+meshsize = 80;
+mesh Th80 = square(meshsize, meshsize, [L * x, L * y]);
+savemesh(Th80, "tr80.mesh");
+
+meshsize = 160;
+mesh Th160 = square(meshsize, meshsize, [L * x, L * y]);
+savemesh(Th160, "tr160.mesh");
+
+meshsize = 320;
+mesh Th320 = square(meshsize, meshsize, [L * x, L * y]);
+savemesh(Th320, "tr320.mesh");
