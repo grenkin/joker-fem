@@ -1,0 +1,9 @@
+load "msh3"
+load "tetgen"
+load "medit"
+
+real Lx = 2, Ly = 2, Lz = 2;
+int Kx = 10, Ky = 10, Kz = 10;
+
+mesh3 Th = cube(Kx, Ky, Kz, [-1 + Lx * x, -1 + Ly * y, -1 + Lz * z]);
+savemesh(Th, "tr_cube.mesh");

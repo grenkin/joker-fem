@@ -6,7 +6,7 @@ u_x + u|_{x=pi} = - sin(y) * sin(z)
 u_y + u|_{y=pi} = - sin(x) * sin(z)
 -u_z + u|_{z=0} = - sin(x) * sin(y)
 u_z + u|_{z=pi} = - sin(x) * sin(y)
-Exact solution: u(x, y) = sin(x) * sin(y) * sin(z)
+Exact solution: u(x, y, z) = sin(x) * sin(y) * sin(z)
 */
 
 #include <joker-fem-3d/bvp3d.h>
