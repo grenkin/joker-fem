@@ -25,7 +25,7 @@ public:
         : N(_N), nodes_num(_nodes_num), unknowns(N * nodes_num),
             A(unknowns, unknowns), b(unknowns), param(_param)
     {
-        int avg_vertex_degree = 8;
+        int avg_vertex_degree = 10;
         int elements_per_row = N * (avg_vertex_degree + 1);
         ins = new inserter_type(A, elements_per_row);
 
